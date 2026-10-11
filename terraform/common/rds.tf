@@ -18,6 +18,6 @@ resource "aws_db_instance" "postgres" {
   deletion_protection = false
 
   tags = {
-    team        = "ml"
+    team = "ml"
   }
 }
