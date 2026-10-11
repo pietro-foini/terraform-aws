@@ -98,6 +98,9 @@ Once the infrastructure resources are provisioned by Terraform:
 
 #### Deploy `chatbot`
 
+**Prerequisite for chatbot deployment**: Ensure the initial Docker image has been built and pushed to ECR (via AWS CodeBuild 
+webhook trigger by pushing to the repo, or manually via docker push) before provisioning EC2.
+
 Navigate to directory:
 
     cd terraform/chatbot
