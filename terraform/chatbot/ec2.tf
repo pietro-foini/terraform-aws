@@ -48,8 +48,8 @@ resource "aws_instance" "chatbot_server" {
                 --restart always \
                 -p 8000:8000 \
                 -e PORT=8000 \
-                -e AWS_DEFAULT_REGION="eu-north-1" \
-                -e AWS_REGION="eu-north-1" \
+                -e AWS_DEFAULT_REGION=$REGION \
+                -e AWS_REGION=$REGION \
                 -e CLOUD_PROVIDER="aws" \
                 -e ENVIRONMENT="cloud" \
                 -e LLM_MODEL="amazon.nova-lite-v1:0" \
