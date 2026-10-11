@@ -10,7 +10,6 @@ resource "aws_db_instance" "postgres" {
   username = var.postgres_user
   password = random_password.postgres_pwd.result
 
-  db_subnet_group_name   = aws_db_subnet_group.rds.name
   vpc_security_group_ids = [aws_security_group.rds.id]
   publicly_accessible    = true
 

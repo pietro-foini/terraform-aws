@@ -151,3 +151,10 @@ applying steps.
 Terraform will automatically fall back to the default `local` backend. If you run terraform apply, it will store the state
 locally in a file named `terraform.tfstate` inside the current folder (make sure `.tfstate` files are included in your 
 `.gitignore` so they are not committed to Git).
+
+---
+
+If you want to delete all the resources created:
+
+    terraform destroy -var-file="../../environments/chatbot/chatbot.tfvars"
+    terraform destroy -var-file="../../environments/chatbot/common.tfvars"
