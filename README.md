@@ -86,7 +86,20 @@ Apply changes:
 
     terraform apply -var-file="../../environments/chatbot/common.tfvars"
 
+#### Post-Deployment Steps (Manual)
+
+Once the infrastructure resources are provisioned by Terraform:
+
+- Enable `pgvector` on RDS:
+  - Connect to the created database (locally for example with DBeaver).
+  - Run the following SQL statement:
+
+    > CREATE EXTENSION IF NOT EXISTS vector;
+
 #### Deploy `chatbot`
+
+**Prerequisite for chatbot deployment**: Ensure the initial Docker image has been built and pushed to ECR (via AWS CodeBuild 
+webhook trigger by pushing to the repo, or manually via docker push) before provisioning EC2.
 
 Navigate to directory:
 
@@ -112,15 +125,19 @@ Apply changes:
 
     terraform apply -var-file="../../environments/chatbot/chatbot.tfvars"
 
-### Step 3: Post-Deployment Steps (Manual)
+Once Terraform finishes running `terraform apply`, the EC2 instance is created, but it typically takes around 1 to 
+2 minutes for the initial bootstrapping (user_data) script to complete in the background.
 
-Once the infrastructure resources are provisioned by Terraform:
+To verify its status:
 
-- Enable `pgvector` on RDS:
-  - Connect to the created database (locally for example with DBeaver).
-  - Run the following SQL statement:
+- Open the AWS Management Console and navigate to EC2 > Instances.
+- Select your instance and connect using EC2 Instance Connect.
+  - Check the bootstrap initialization logs by running: `sudo cat /var/log/cloud-init-output.log`
+  - If you see active downloads, package installations, or tasks in progress at the bottom: the machine is still provisioning. Wait another 30–60 seconds.
+  - If you see a red error message or a non-zero exit code: the script encountered a failure and halted at that step.
+- Once the log shows that cloud-init has finished successfully, your FastAPI service is live and reachable in your browser at:
 
-    > CREATE EXTENSION IF NOT EXISTS vector;
+      http://<EC2_PUBLIC_IP>:8000
 
 ---
 
@@ -134,3 +151,10 @@ applying steps.
 Terraform will automatically fall back to the default `local` backend. If you run terraform apply, it will store the state
 locally in a file named `terraform.tfstate` inside the current folder (make sure `.tfstate` files are included in your 
 `.gitignore` so they are not committed to Git).
+
+---
+
+If you want to delete all the resources created:
+
+    terraform destroy -var-file="../../environments/chatbot/chatbot.tfvars"
+    terraform destroy -var-file="../../environments/chatbot/common.tfvars"

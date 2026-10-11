@@ -1,9 +1,3 @@
-resource "aws_db_subnet_group" "rds" {
-  name        = "ml-rds-subnet-group"
-  subnet_ids  = data.aws_subnets.default.ids
-  description = "Subnet group for PostgreSQL RDS"
-}
-
 resource "aws_security_group" "rds" {
   name        = "ml-rds-sg"
   description = "Inbound rules for RDS PostgreSQL firewall"
@@ -14,7 +8,7 @@ resource "aws_security_group" "rds" {
     from_port   = 5432
     to_port     = 5432
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]  // TODO: change fore real scenarios
+    cidr_blocks = ["0.0.0.0/0"] // TODO: change fore real scenarios
   }
 
   egress {
